@@ -10,6 +10,8 @@ public class ConnectToServer : MonoBehaviour {
 	/// </summary>
 	public static NetworkDisconnection disconnection;
 
+	public static int DEFAULT_PORT = 9050;
+
 	/// <summary>
 	/// An enumeration that stores all possible states that the menu can be in.
 	/// </summary>
@@ -38,6 +40,14 @@ public class ConnectToServer : MonoBehaviour {
 	void Start () {
 		//If there are no states, set it to the current menu
 		if(states.Count == 0) states.Push(MenuState.JoinOrHost);
+
+		TestingFramework.Initialize();
+
+		if(TestingFramework.localServer)
+			Network.InitializeServer(32, 9050, false);
+		if(TestingFramework.localClient)
+			Network.Connect("127.0.0.1", DEFAULT_PORT);
+
 	}
 	
 	// Update is called once per frame
@@ -95,12 +105,12 @@ public class ConnectToServer : MonoBehaviour {
 			
 			if (GUILayout.Button ("Start Local Server"))
 			{
-				Network.InitializeServer(32, 9050, false);
+				Network.InitializeServer(32, DEFAULT_PORT, false);
 			}
 
 			if (GUILayout.Button ("Start Online Server"))
 			{
-				Network.InitializeServer(32, 9050, !Network.HavePublicAddress());
+				Network.InitializeServer(32, DEFAULT_PORT, !Network.HavePublicAddress());
 				MasterServer.RegisterHost("FuckThisMOBA", "Test Game", "Test Game Description");
 			}
 		}
@@ -110,7 +120,7 @@ public class ConnectToServer : MonoBehaviour {
 			if(GUILayout.Button("Connect")) {
 				string[] ipstrings = ipaddressfield.Split(':');
 				string ipaddress = ipstrings[0];
-				int port = 9050;
+				int port = DEFAULT_PORT;
 				if(ipstrings.Length > 1)
 					port = Int32.Parse(ipstrings[1]);
 

@@ -141,13 +141,15 @@ public class MatchConfig {
 	/// </summary>
 	/// <returns>The team.</returns>
 	public Team nextTeam() {
-		if(redTeam.Count == blueTeam.Count)
-			return (Utils.RandomChance()) ? Team.Red : Team.Blue;
+		if(redTeam.Count == blueTeam.Count) {
+			if(redTeam.Count == 5) return Team.Spectator; //Maximum limit reached - overfill into specator list
+			return (Utils.RandomChance()) ? Team.Red : Team.Blue; //Randomly assign a team
+		}
 
 		if(redTeam.Count < blueTeam.Count)
-			return Team.Red;
+			return Team.Red; //Red needs more players
 		else
-			return Team.Blue;
+			return Team.Blue; //Blue needs more players
 	}
 
 	public void setRole(NetworkPlayer player, Role role) {

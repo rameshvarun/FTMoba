@@ -22,6 +22,16 @@ public enum Role {
 	Spectator
 }
 
+public enum Champion {
+	Warrior,
+	Marshall,
+	Ogre,
+	Mage,
+	Monk,
+	Prince,
+	Unselected
+}
+
 public class MatchConfig {
 	private NetworkPlayer? redDM;
 	private NetworkPlayer? blueDM;
@@ -29,6 +39,8 @@ public class MatchConfig {
 	private List<NetworkPlayer> redTeam = new List<NetworkPlayer>();
 	private List<NetworkPlayer> blueTeam = new List<NetworkPlayer>();
 	private List<NetworkPlayer> spectators = new List<NetworkPlayer>();
+
+	private Dictionary<NetworkPlayer, Champion> champions = new Dictionary<NetworkPlayer, Champion>();
 
 	/// <summary>
 	/// Get a list of players on the given team.
@@ -153,10 +165,24 @@ public class MatchConfig {
 		//TODO: If role is spectator
 	}
 
+	/// <summary>
+	/// Returns a random player on the given team.
+	/// </summary>
+	/// <returns>The player.</returns>
+	/// <param name="team">Team.</param>
 	public NetworkPlayer randomPlayer(Team team) {
 		List<NetworkPlayer> players = getPlayersOnTeam(team);
 		int index = Random.Range(0, players.Count);
 		return players[index];
+	}
+
+	public Champion getChampion(NetworkPlayer player) {
+		if(champions.ContainsKey(player)) return champions[player];
+		else return Champion.Unselected;
+	}
+
+	public void setChampion(NetworkPlayer player, Champion champion) {
+		champions[player] = champion;
 	}
 	
 	/// <summary>

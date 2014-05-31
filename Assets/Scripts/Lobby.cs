@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class Lobby : MonoBehaviour {
 	public MatchConfig config;
@@ -106,8 +107,12 @@ public class Lobby : MonoBehaviour {
 
 		if (config.readyToStart() && Network.isServer) {
 			if (GUILayout.Button ("Start Game")) {
-				networkView.RPC("setRole", RPCMode.All, config.randomPlayer(Team.Red), (int)Role.DungeonMaster);
-				networkView.RPC("setRole", RPCMode.All, config.randomPlayer(Team.Blue), (int)Role.DungeonMaster);
+				try {
+					networkView.RPC("setRole", RPCMode.All, config.randomPlayer(Team.Red), (int)Role.DungeonMaster);
+					networkView.RPC("setRole", RPCMode.All, config.randomPlayer(Team.Blue), (int)Role.DungeonMaster);
+				} catch (Exception e) {
+					System.Console.Out.WriteLine(e.StackTrace);
+				}
 
 				networkView.RPC("startLevel", RPCMode.All);
 			}

@@ -10,6 +10,9 @@ public class ConnectToServer : MonoBehaviour {
 	/// </summary>
 	public static NetworkDisconnection disconnection;
 
+	/// <summary>
+	/// An enumeration that stores all possible states that the menu can be in.
+	/// </summary>
 	public enum MenuState {
 		JoinOrHost,
 		JoinOptions,
@@ -28,13 +31,13 @@ public class ConnectToServer : MonoBehaviour {
 
 	void Awake() {
 		MasterServer.RequestHostList("FuckThisMOBA");
+		Application.runInBackground = true;
 	}
+
 	// Use this for initialization
 	void Start () {
 		//If there are no states, set it to the current menu
 		if(states.Count == 0) states.Push(MenuState.JoinOrHost);
-
-		MatchConfig.singleton = new MatchConfig();
 	}
 	
 	// Update is called once per frame

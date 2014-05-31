@@ -25,4 +25,12 @@ public class GameController : MonoBehaviour {
 	void Update () {
 	
 	}
+
+	void OnDisconnectedFromServer(NetworkDisconnection info) {
+		ConnectToServer.disconnection = info;
+		
+		Debug.Log("Disconnected from server: " + info);
+		ConnectToServer.states.Push(ConnectToServer.MenuState.Disconnection);
+		Application.LoadLevel(0);
+	}
 }

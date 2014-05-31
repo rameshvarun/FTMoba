@@ -5,10 +5,13 @@ public class ChampionScript : MonoBehaviour {
 
 	private CharacterMotor motor;
 
+	public Transform bullet;
+
 	public Vector3 cameraDisplacement;
 	public float cameraFollowSpeed;
 
 	private Vector3 directionVector;
+
 
 	// Use this for initialization
 	void Start () {
@@ -22,9 +25,22 @@ public class ChampionScript : MonoBehaviour {
 			directionVector = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 
 			//Make camera follow champion
-			Vector3 cameraTarget = transform.position + cameraDisplacement;
-			Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, cameraTarget, cameraFollowSpeed*Time.deltaTime);
+			Camera.main.transform.position = transform.position + cameraDisplacement;
 			Camera.main.transform.LookAt(transform.position);
+
+			//Bullet firing
+			if( Input.GetMouseButtonDown(0) ) {
+				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+				RaycastHit hit;
+				if(Physics.Raycast(ray, out hit)) {
+					Vector3 target = hit.point;
+					target.y = transform.position.y;
+
+					Quaternion bulletDirection = Quaternion.LookRotation(target - transform.position);
+					Transform createdBullet = (Transform)(Network.Instantiate(bullet, transform.position, bulletDirection, 0));
+					Debug.Log(target);
+				}
+			}
 		}
 
 		if(directionVector != Vector3.zero) {

@@ -32,9 +32,11 @@ public class InGameChat : MonoBehaviour {
 		GUILayout.BeginHorizontal();
 		chat = GUILayout.TextField(chat);
 
-		if(GUILayout.Button("Send", GUILayout.Width (95))) {
-			networkView.RPC("AddMessage", RPCMode.All, "Player " + Network.player.ToString() + " says: " + chat);
-			chat = "";
+		if(GUILayout.Button("Send", GUILayout.Width (95)) || Input.GetKey(KeyCode.Return)) {
+			if(chat.Length > 0) {
+				networkView.RPC("AddMessage", RPCMode.All, "Player " + Network.player.ToString() + " says: " + chat);
+				chat = "";
+			}
 		}
 		GUILayout.EndHorizontal();
 

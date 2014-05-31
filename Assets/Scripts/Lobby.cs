@@ -46,8 +46,6 @@ public class Lobby : MonoBehaviour {
 		networkView.RPC ("RemovePlayer", RPCMode.All, leavingPlayer);
 	}
 
-	List<string> messages = new List<string>();
-
 	[RPC]
 	void RemovePlayer(NetworkPlayer player){ config.RemovePlayer(player); }
 
@@ -55,9 +53,6 @@ public class Lobby : MonoBehaviour {
 	void AddPlayer(NetworkPlayer player, int team){
 		config.AddPlayer((Team)team, player);
 	}
-
-	[RPC]
-	void AddMessage(string message) { messages.Add(message); }
 
 	[RPC]
 	void setRole(NetworkPlayer player, int role){
@@ -71,23 +66,8 @@ public class Lobby : MonoBehaviour {
 		Network.isMessageQueueRunning = true;
 	}
 
-	Vector2 chatScroll = new Vector2();
-	string chat = "";
-
 	void OnGUI() {
-		GUILayout.Label("Hosing On: " + Network.player.ipAddress + ":" + Network.player.port);
-
-		chatScroll = GUILayout.BeginScrollView(chatScroll);
-		foreach(string message in messages) {
-			GUILayout.Label(message);
-		}
-		GUILayout.EndScrollView();
-
-		chat = GUILayout.TextField(chat);
-		if(GUILayout.Button("Send Message")) {
-			networkView.RPC("AddMessage", RPCMode.All, Network.player.ToString() + " says: " + chat);
-			chat = "";
-		}
+		GUILayout.Label("Hosting On: " + Network.player.ipAddress + ":" + Network.player.port);
 
 		GUILayout.Label ("Red Team");
 		foreach (NetworkPlayer redPlayer in config.getPlayersOnTeam(Team.Red) ) {

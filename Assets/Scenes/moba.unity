@@ -417,7 +417,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25e2eff59afb1f546a9ed2198bc5584b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  championPrefab: {fileID: 400000, guid: e6ab178672455bf409ff52f2be834350, type: 2}
+  warrior: {fileID: 400000, guid: e6ab178672455bf409ff52f2be834350, type: 2}
   dmcontrollerPrefab: {fileID: 400000, guid: 5cfcbb1c9b037e143af0a4f7c6272c15, type: 2}
 --- !u!1 &1600262101
 GameObject:

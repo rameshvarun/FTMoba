@@ -20,6 +20,7 @@ var inputMoveDirection : Vector3 = Vector3.zero;
 var inputJump : boolean = false;
 
 class CharacterMotorMovement {
+
 	// The maximum horizontal speed when moving
 	var maxForwardSpeed : float = 10.0;
 	var maxSidewaysSpeed : float = 10.0;
@@ -564,17 +565,23 @@ function SetControllable (controllable : boolean) {
 	canControl = controllable;
 }
 
+private var sprinting : boolean = false;
+
+function SetSprinting(issprinting : boolean) {
+	sprinting = issprinting;
+}
+
 // Project a direction onto elliptical quater segments based on forward, sideways, and backwards speed.
 // The function returns the length of the resulting vector.
 function MaxSpeedInDirection (desiredMovementDirection : Vector3) : float {
 	if (desiredMovementDirection == Vector3.zero)
 		return 0;
 	else {
-		var sprint : float = (Input.GetKey("left shift")) ? movement.sprintMultiplier : 1;
-		var zAxisEllipseMultiplier : float = sprint*(desiredMovementDirection.z > 0 ? movement.maxForwardSpeed : movement.maxBackwardsSpeed) / movement.maxSidewaysSpeed;
+		var sprint : float = (sprinting) ? movement.sprintMultiplier : 1;
+		var zAxisEllipseMultiplier : float = (desiredMovementDirection.z > 0 ? movement.maxForwardSpeed : movement.maxBackwardsSpeed) / movement.maxSidewaysSpeed;
 		var temp : Vector3 = new Vector3(desiredMovementDirection.x, 0, desiredMovementDirection.z / zAxisEllipseMultiplier).normalized;
 		var length : float = new Vector3(temp.x, 0, temp.z * zAxisEllipseMultiplier).magnitude * movement.maxSidewaysSpeed;
-		return length;
+		return sprint*length;
 	}
 }
 

@@ -3,7 +3,7 @@ using System.Collections;
 
 public class GameController : MatchManagement {
 
-	public Transform championPrefab;
+	public Transform warrior;
 	public Transform dmcontrollerPrefab;
 
 	// Use this for initialization
@@ -13,11 +13,23 @@ public class GameController : MatchManagement {
 		Spawn ();
 	}
 
+	/// <summary>
+	/// Spawn the appropriate character controller for this player, given their assigned role in the match.
+	/// </summary>
 	void Spawn() {
 		if(config.getRole(Network.player) == Role.Champion) {
 			if(config.getChampion(Network.player) != Champion.Unselected) {
 				GameObject spawnObject = GameObject.Find( (config.getTeam(Network.player) == Team.Red) ? "RedSpawn" : "BlueSpawn" );
-				Network.Instantiate(championPrefab, spawnObject.transform.position, spawnObject.transform.rotation, 0);
+
+				//Pick the correct prefab to spawn as
+				Transform championPrefab = null;
+				switch(config.getChampion(Network.player)) {
+				case Champion.Warrior:
+					championPrefab = warrior; break;
+				}
+
+				if(championPrefab != null)
+					Network.Instantiate(championPrefab, spawnObject.transform.position, spawnObject.transform.rotation, 0);
 			}
 		}
 		if(config.getRole(Network.player) == Role.DungeonMaster) {
@@ -35,6 +47,7 @@ public class GameController : MatchManagement {
 
 	void OnGUI() {
 		if(config.getRole(Network.player) == Role.Champion) {
+			//If the player has not selected a champion, provide them with the selection dialog
 			if(config.getChampion(Network.player) == Champion.Unselected) {
 					
 				int TABLE_WIDTH = 500;

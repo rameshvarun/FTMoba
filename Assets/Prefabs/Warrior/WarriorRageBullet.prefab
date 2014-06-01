@@ -14,7 +14,7 @@ GameObject:
   - 148: {fileID: 14800000}
   - 114: {fileID: 11400000}
   m_Layer: 0
-  m_Name: Bullet
+  m_Name: WarriorRageBullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27,8 +27,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.74234819, y: 1.4778201e-16, z: -6.65550995}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: .5, y: .5, z: .5}
   m_Children: []
   m_Father: {fileID: 0}
 --- !u!23 &2300000
@@ -70,8 +70,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52b5e1d8262667848badf41d0c596251, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  velocity: 40
-  lifetime: 15
+  velocity: 20
+  lifetime: 1
 --- !u!135 &13500000
 SphereCollider:
   m_ObjectHideFlags: 1

@@ -6,6 +6,20 @@ public class GameController : MatchManagement {
 	public Transform warrior;
 	public Transform dmcontrollerPrefab;
 
+	public Transform creep;
+
+	public Cooldown waveCooldown;
+	public Cooldown creepCooldown;
+
+	[System.Serializable]
+	public class LanePaths {
+		public Transform[] topPath;
+		public Transform[] middlePath;
+		public Transform[] bottomPath;
+	}
+
+	public LanePaths paths;
+
 	// Use this for initialization
 	void Start () {
 		config = MatchConfig.singleton;
@@ -39,10 +53,36 @@ public class GameController : MatchManagement {
 		if(config.getRole (Network.player) == Role.Spectator) {
 		}
 	}
+
+	void SpawnCreep(Team team) {
+		//Spawn Position
+		GameObject spawnObject = GameObject.Find( (team == Team.Red) ? "RedSpawn" : "BlueSpawn" );
+		Transform creepTransform = (Transform)(Network.Instantiate(creep, spawnObject.transform.position, Quaternion.identity, 0));
+		CreepScript creepScript = creepTransform.GetComponent<CreepScript>();
+	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+
+
+		if(Network.isServer) {
+			creepCooldown.Update();
+			waveCooldown.Update();
+
+			if(waveCooldown.IsReady()) {
+				waveCooldown.Reset();
+			}
+
+			if(waveCooldown.Active()) {
+				if(creepCooldown.IsReady())
+				{
+					creepCooldown.Reset();
+
+					SpawnCreep(Team.Red);
+					SpawnCreep(Team.Blue);
+				}
+			}
+		}
 	}
 
 	void OnGUI() {
@@ -76,7 +116,7 @@ public class GameController : MatchManagement {
 					config.setChampion(Network.player, Champion.Prince);
 				}
 
-				Spawn ();
+				Spawn();
 
 				GUILayout.EndVertical();
 				GUILayout.EndArea();

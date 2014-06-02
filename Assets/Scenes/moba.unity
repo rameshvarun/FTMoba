@@ -499,10 +499,10 @@ MonoBehaviour:
   dmcontrollerPrefab: {fileID: 400000, guid: 5cfcbb1c9b037e143af0a4f7c6272c15, type: 2}
   creep: {fileID: 400000, guid: be94182529e5e0f49932fea12dfb15cb, type: 2}
   waveCooldown:
-    cooldownTime: 30
-    activeTime: 5
+    cooldownTime: 60
+    activeTime: 4
   creepCooldown:
-    cooldownTime: 1
+    cooldownTime: 2
     activeTime: 0
   paths:
     topPath:

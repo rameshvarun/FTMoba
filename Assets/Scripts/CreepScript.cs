@@ -24,10 +24,23 @@ public class CreepScript : MonoBehaviour, IUnit {
 	public Team team;
 	public Team getTeam() { return team; }
 
+	public Bar healthBar;
+
+	private float health;
+	public float maxHealth;
+
+	public bool isAlive() {
+		return health > 0;
+	}
+
+	public void Attack(float power) {}
+
 	// Use this for initialization
 	void Start () {
 		motor = GetComponent<CharacterMotor>();
 		gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+
+		health = maxHealth;
 	}
 
 	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info) {
@@ -90,5 +103,16 @@ public class CreepScript : MonoBehaviour, IUnit {
 				motor.inputMoveDirection = Vector3.zero;
 			}
 		}
+	}
+
+	void OnGUI() {
+		//Health bar position
+		Vector3 characterScreenPosition = Camera.main.WorldToScreenPoint(transform.position + new Vector3(0, 2, 0));
+		characterScreenPosition.y = Screen.height - characterScreenPosition.y;
+		
+		//Draw healthbar
+		healthBar.position = new Vector2(characterScreenPosition.x, characterScreenPosition.y);
+		healthBar.SetPercentage(health / maxHealth);
+		healthBar.OnGUI();
 	}
 }

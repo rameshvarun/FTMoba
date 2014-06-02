@@ -1,7 +1,49 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ChampionScript : MonoBehaviour, IUnit {
+[System.Serializable]
+public class Bar {
+	public Texture2D emptyTex;
+	public Texture2D fullTex;
+
+	public Vector2 position;
+	public Vector2 size;
+
+	private float percentage = 1.0f;
+
+	public void SetPercentage(float newPercentage) {
+		percentage = newPercentage;
+	}
+
+	public void OnGUI() {
+		GUI.DrawTexture(new Rect(position.x - size.x/2, position.y - size.y/2, size.x, size.y), emptyTex);
+		GUI.DrawTexture(new Rect(position.x - size.x/2, position.y - size.y/2, size.x * percentage, size.y), fullTex);
+	}
+}
+
+public class ChampionBase : MonoBehaviour, IUnit {
+	public void FireBullet(Transform bulletPrefab, Vector3 position, Quaternion rotation) {
+		Debug.Log ("Bullet Fired.");
+		Transform bulletTransform = (Transform)(Network.Instantiate(bulletPrefab, position, rotation, 0));
+		Bullet bulletScript = bulletTransform.GetComponent<Bullet>();
+		bulletScript.owner = this;
+	}
+
+	public Team getTeam() {
+		return MatchConfig.singleton.getTeam(networkView.owner);
+	}
+
+	protected float heath;
+	public float maxHealth;
+
+	public bool isAlive() {
+		return heath > 0;
+	}
+
+	public void Attack(float power) {}
+}
+
+public class ChampionScript : ChampionBase {
 
 	private CharacterMotor motor;
 
@@ -21,8 +63,9 @@ public class ChampionScript : MonoBehaviour, IUnit {
 		public float zoomSpeed;
 	}
 
-	private float heath;
-	public float maxHealth;
+
+
+	public Bar healthBar;
 
 	public Cooldown attack;
 	public Cooldown qSkill;
@@ -36,8 +79,9 @@ public class ChampionScript : MonoBehaviour, IUnit {
 	// Use this for initialization
 	void Start () {
 		motor = GetComponent<CharacterMotor>();
+		heath = maxHealth;
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 
@@ -62,6 +106,7 @@ public class ChampionScript : MonoBehaviour, IUnit {
 
 			//Bullet firing
 			if( Input.GetMouseButton(0) && attack.IsReady() ) {
+				Debug.Log("Mouse Down.");
 				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 				RaycastHit hit;
 				if(Physics.Raycast(ray, out hit)) {
@@ -73,14 +118,14 @@ public class ChampionScript : MonoBehaviour, IUnit {
 					Quaternion bulletDirection = Quaternion.LookRotation(target - transform.position);
 
 					if(eSkill.Active()) { //Spread mode
-						Network.Instantiate(bullet, transform.position, bulletDirection * Quaternion.Euler(0, 0, 0) , 0);
-						Network.Instantiate(bullet, transform.position, bulletDirection * Quaternion.Euler(0, 15, 0) , 0);
-						Network.Instantiate(bullet, transform.position, bulletDirection * Quaternion.Euler(0, -15, 0) , 0);
-						Network.Instantiate(bullet, transform.position, bulletDirection * Quaternion.Euler(0, 30, 0) , 0);
-						Network.Instantiate(bullet, transform.position, bulletDirection * Quaternion.Euler(0, -30, 0) , 0);
+						FireBullet(bullet, transform.position, bulletDirection * Quaternion.Euler(0, 0, 0) );
+						FireBullet(bullet, transform.position, bulletDirection * Quaternion.Euler(0, 15, 0) );
+						FireBullet(bullet, transform.position, bulletDirection * Quaternion.Euler(0, -15, 0) );
+						FireBullet(bullet, transform.position, bulletDirection * Quaternion.Euler(0, 30, 0) );
+						FireBullet(bullet, transform.position, bulletDirection * Quaternion.Euler(0, -30, 0) );
 					}
 					else { //Regular bullet
-						Network.Instantiate(bullet, transform.position, bulletDirection, 0);
+						FireBullet(bullet, transform.position, bulletDirection);
 					}
 
 				}
@@ -97,15 +142,15 @@ public class ChampionScript : MonoBehaviour, IUnit {
 
 			if(rSkill.Active() && rageAttack.IsReady()) {
 				float rotationOffset = 90 * Time.time;
-				Network.Instantiate(rageBullet, transform.position, Quaternion.Euler(0, rotationOffset, 0) , 0);
-				Network.Instantiate(rageBullet, transform.position, Quaternion.Euler(0, rotationOffset + 90, 0)  , 0);
-				Network.Instantiate(rageBullet, transform.position, Quaternion.Euler(0, rotationOffset + 180, 0) , 0);
-				Network.Instantiate(rageBullet, transform.position, Quaternion.Euler(0, rotationOffset + 270, 0) , 0);
+				FireBullet(rageBullet, transform.position, Quaternion.Euler(0, rotationOffset, 0) );
+				FireBullet(rageBullet, transform.position, Quaternion.Euler(0, rotationOffset + 90, 0)  );
+				FireBullet(rageBullet, transform.position, Quaternion.Euler(0, rotationOffset + 180, 0) );
+				FireBullet(rageBullet, transform.position, Quaternion.Euler(0, rotationOffset + 270, 0) );
 
-				Network.Instantiate(rageBullet, transform.position, Quaternion.Euler(0, rotationOffset + 45, 0) , 0);
-				Network.Instantiate(rageBullet, transform.position, Quaternion.Euler(0, rotationOffset + 90 + 45, 0)  , 0);
-				Network.Instantiate(rageBullet, transform.position, Quaternion.Euler(0, rotationOffset + 180 + 45, 0) , 0);
-				Network.Instantiate(rageBullet, transform.position, Quaternion.Euler(0, rotationOffset + 270 + 45, 0) , 0);
+				FireBullet(rageBullet, transform.position, Quaternion.Euler(0, rotationOffset + 45, 0) );
+				FireBullet(rageBullet, transform.position, Quaternion.Euler(0, rotationOffset + 90 + 45, 0) );
+				FireBullet(rageBullet, transform.position, Quaternion.Euler(0, rotationOffset + 180 + 45, 0) );
+				FireBullet(rageBullet, transform.position, Quaternion.Euler(0, rotationOffset + 270 + 45, 0) );
 
 				rageAttack.Reset();
 			}
@@ -175,11 +220,17 @@ public class ChampionScript : MonoBehaviour, IUnit {
 		}
 
 		GUILayout.EndHorizontal();
-
 		GUILayout.EndArea();
+
+		//Health bar position
+		Vector3 characterScreenPosition = Camera.main.WorldToScreenPoint(transform.position + new Vector3(0, 2, 0));
+		characterScreenPosition.y = Screen.height - characterScreenPosition.y;
+
+		//Draw healthbar
+		healthBar.position = new Vector2(characterScreenPosition.x, characterScreenPosition.y);
+		healthBar.SetPercentage(heath / maxHealth);
+		healthBar.OnGUI();
 	}
 
-	public Team getTeam() {
-		return MatchConfig.singleton.getTeam(networkView.owner);
-	}
+
 }

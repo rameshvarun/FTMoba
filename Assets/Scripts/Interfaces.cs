@@ -14,5 +14,9 @@ public interface IUnit
 	/// </summary>
 	/// <returns>The team.</returns>
 	Team getTeam();
+
+	bool isAlive();
+
+	void Attack(float power);
 }
 

@@ -16,7 +16,7 @@ GameObject:
   - 148: {fileID: 14800000}
   m_Layer: 0
   m_Name: Creep
-  m_TagString: Untagged
+  m_TagString: Unit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -127,11 +127,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8aac2780c04457743b26e2a4735341b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  topPath: []
-  middlePath: []
-  bottomPath: []
   lane: 1
   rotateSpeed: 3
+  team: 0
+  healthBar:
+    emptyTex: {fileID: 2800000, guid: 92390ac0ba157184d885d8cf6f5f0113, type: 3}
+    fullTex: {fileID: 2800000, guid: eff4640fbd531a442a54539dd8f99c33, type: 3}
+    position: {x: 0, y: 0}
+    size: {x: 100, y: 7.5}
+  maxHealth: 5
 --- !u!143 &14300000
 CharacterController:
   m_ObjectHideFlags: 1

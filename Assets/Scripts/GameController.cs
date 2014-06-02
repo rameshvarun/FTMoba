@@ -54,11 +54,13 @@ public class GameController : MatchManagement {
 		}
 	}
 
-	void SpawnCreep(Team team) {
+	void SpawnCreep(Team team, Lane lane) {
 		//Spawn Position
 		GameObject spawnObject = GameObject.Find( (team == Team.Red) ? "RedSpawn" : "BlueSpawn" );
 		Transform creepTransform = (Transform)(Network.Instantiate(creep, spawnObject.transform.position, Quaternion.identity, 0));
 		CreepScript creepScript = creepTransform.GetComponent<CreepScript>();
+		creepScript.team = team;
+		creepScript.lane = lane;
 	}
 	
 	// Update is called once per frame
@@ -78,8 +80,14 @@ public class GameController : MatchManagement {
 				{
 					creepCooldown.Reset();
 
-					SpawnCreep(Team.Red);
-					SpawnCreep(Team.Blue);
+					SpawnCreep(Team.Red, Lane.Top);
+					SpawnCreep(Team.Blue, Lane.Top);
+					
+					SpawnCreep(Team.Red, Lane.Middle);
+					SpawnCreep(Team.Blue, Lane.Middle);
+
+					SpawnCreep(Team.Red, Lane.Bottom);
+					SpawnCreep(Team.Blue, Lane.Bottom);
 				}
 			}
 		}

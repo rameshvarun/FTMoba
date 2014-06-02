@@ -8,6 +8,8 @@ public class LinearBullet : MonoBehaviour {
 
 	private float time;
 
+	public IUnit owner;
+
 	// Use this for initialization
 	void Start () {
 		time = 0;

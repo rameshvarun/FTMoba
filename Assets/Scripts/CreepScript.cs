@@ -1,12 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Simple enumeration to differentiate between the three lanes.
+/// </summary>
 [System.Serializable]
 public enum Lane {
 	Top, Middle, Bottom
 }
 
-public class CreepScript : MonoBehaviour {
+public class CreepScript : MonoBehaviour, IUnit {
 
 	private int currentWaypoint = 0;
 
@@ -17,6 +20,9 @@ public class CreepScript : MonoBehaviour {
 	private CharacterMotor motor;
 
 	private GameController gameController;
+
+	public Team team;
+	public Team getTeam() { return team; }
 
 	// Use this for initialization
 	void Start () {

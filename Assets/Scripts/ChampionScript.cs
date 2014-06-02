@@ -1,38 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[System.Serializable]
-public class Cooldown {
-	public float cooldownTime;
-	public float activeTime;
-	private float cooldownTimer;
-
-	public Cooldown() {
-		cooldownTimer = 0.0f;
-	}
-
-	public Cooldown(float cooldownTime) {
-		this.cooldownTime = cooldownTime;
-	}
-
-	public void Update() {
-		cooldownTimer -= Time.deltaTime;
-	}
-
-	public bool IsReady() {
-		return cooldownTimer < 0;
-	}
-
-	public void Reset() {
-		cooldownTimer = cooldownTime;
-	}
-
-	public bool Active() {
-		return cooldownTimer > (cooldownTime - activeTime);
-	}
-}
-
-public class ChampionScript : MonoBehaviour {
+public class ChampionScript : MonoBehaviour, IUnit {
 
 	private CharacterMotor motor;
 
@@ -51,6 +20,9 @@ public class ChampionScript : MonoBehaviour {
 		public float zoomMin;
 		public float zoomSpeed;
 	}
+
+	private float heath;
+	public float maxHealth;
 
 	public Cooldown attack;
 	public Cooldown qSkill;
@@ -205,5 +177,9 @@ public class ChampionScript : MonoBehaviour {
 		GUILayout.EndHorizontal();
 
 		GUILayout.EndArea();
+	}
+
+	public Team getTeam() {
+		return MatchConfig.singleton.getTeam(networkView.owner);
 	}
 }
